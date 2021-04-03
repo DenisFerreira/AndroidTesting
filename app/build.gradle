@@ -37,8 +37,8 @@ android {
     }
     testOptions.unitTests {
         includeAndroidResources = true
-
-        // ...
+        // Used in Idling Resources
+        returnDefaultValues = true
     }
     packagingOptions {
         exclude 'META-INF/AL2.0'
@@ -92,6 +92,8 @@ dependencies {
     androidTestImplementation "org.mockito:mockito-core:$mockitoVersion"
     androidTestImplementation "com.linkedin.dexmaker:dexmaker-mockito:$dexMakerVersion"
     androidTestImplementation "androidx.test.espresso:espresso-contrib:$espressoVersion"
+    androidTestImplementation "androidx.arch.core:core-testing:$archTestingVersion"
+
 
     // Testing code should not be included in the main code.
     // Once https://issuetracker.google.com/128612536 is fixed this can be fixed.
@@ -102,5 +104,10 @@ dependencies {
     // Kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion"
     implementation "androidx.fragment:fragment-ktx:$fragmentKtxVersion"
+
+    // It is unusual to have testing code in your application. To understand more about
+    // why and methods of removing idling resource code from your application production code,
+    // check out Android testing with Espresso’s Idling Resources and testing fidelity.
+    implementation "androidx.test.espresso:espresso-idling-resource:$espressoVersion"
 
 }

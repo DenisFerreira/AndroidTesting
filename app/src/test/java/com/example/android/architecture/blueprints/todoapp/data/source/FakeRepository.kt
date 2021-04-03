@@ -7,11 +7,19 @@ import com.example.android.architecture.blueprints.todoapp.data.Task
 import kotlinx.coroutines.runBlocking
 
 class FakeRepository : TasksRepository {
+
+    private var shouldReturnError: Boolean = false
+    fun setReturnError(value: Boolean) {
+        shouldReturnError = value
+    }
+
     var tasksServiceData: LinkedHashMap<String, Task> = LinkedHashMap()
 
     private val observableTasks = MutableLiveData<Result<List<Task>>>()
 
     override suspend fun getTasks(forceUpdate: Boolean): Result<List<Task>> {
+        if (shouldReturnError)
+            return Result.Error(Exception("Test Exception"))
         return Result.Success(tasksServiceData.values.toList())
     }
 
@@ -33,7 +41,13 @@ class FakeRepository : TasksRepository {
     }
 
     override suspend fun getTask(taskId: String, forceUpdate: Boolean): Result<Task> {
-        TODO("Not yet implemented")
+        if (shouldReturnError) {
+            return Result.Error(Exception("Test exception"))
+        }
+        tasksServiceData[taskId]?.let {
+            return Result.Success(it)
+        }
+        return Result.Error(Exception("Could not find task"))
     }
 
     override suspend fun saveTask(task: Task) {
